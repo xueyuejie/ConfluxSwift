@@ -9,35 +9,58 @@ import Foundation
 import BIP32Swift
 import CryptoSwift
 import BIP39swift
-import TweetNacl
+import Secp256k1Swift
 
 public struct ConfluxKeypair {
     public var mnemonics: String?
     public var privateKey: Data
     public var publicKey: Data
+    public var address: Address
     
     public init(privateKey: Data) throws {
+        guard let pubKey = SECP256K1.privateToPublic(privateKey: privateKey, compressed: false) else {
+            throw ConfluxKeypairError.invalidPrivateKey
+        }
+        
         self.privateKey = privateKey
-        let pubKey = secp256
-        let pubKey = try NaclSign.KeyPair.keyPair(fromSecretKey: privateKey).publicKey
-        self.publicKey = Data()
+        self.publicKey = Data(pubKey.bytes[1..<pubKey.count])
+        let addressData = pubKey.sha3(.keccak256).suffix(20)
+        self.address = Address(data: addressData, netId: 1029)
     }
     
-    public init(seed: Data) throws {
-        let privateKey = try NaclSign.KeyPair.keyPair(fromSeed: seed[0..<32]).secretKey
+    public init(seed: Data, path: String) throws {
+        guard let hdnode = HDNode(seed: seed),
+              let derivedNode = hdnode.derive(path: "\(path)/0"),
+              let privateKey = derivedNode.privateKey else {
+            throw ConfluxKeypairError.invalidSeed
+        }
         try self.init(privateKey: privateKey)
     }
     
-    public init(mnemonics: String, path: String) throws {
+    public init(mnemonics: String, path: String = "m/44'/503'/0'/0") throws {
         guard let mnemonicSeed = BIP39.seedFromMmemonics(mnemonics) else {
-            throw Error.invalidMnemonic
+            throw ConfluxKeypairError.invalidMnemonic
         }
+        try self.init(seed: mnemonicSeed, path: path)
     }
     
     public static func randomKeyPair() throws -> ConfluxKeypair {
         guard let mnemonic = try? BIP39.generateMnemonics(bitsOfEntropy: 128) else{
-            throw SolanaKeyPair.Error.invalidMnemonic
+            throw ConfluxKeypairError.invalidMnemonic
         }
-        return try SolanaKeyPair(mnemonics: mnemonic, path: SolanaMnemonicPath.PathType.Ed25519.default)
+        return try ConfluxKeypair(mnemonics: mnemonic)
+    }
+}
+
+// MARK: Error
+public enum ConfluxKeypairError: String, LocalizedError {
+    case invalidMnemonic
+    case invalidDerivePath
+    case invalidSeed
+    case invalidPrivateKey
+    case unknown
+    
+    public var errorDescription: String? {
+        return "ConfluxKeypairError.\(rawValue)"
     }
 }
