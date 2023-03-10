@@ -10,7 +10,7 @@ import BigInt
 
 public struct RawTransaction {
     public let value: BigInt
-    public let to: AddressRaw
+    public let to: Address
     public let gasPrice: Int
     public let gasLimit: Int
     public let nonce: Int
@@ -21,9 +21,10 @@ public struct RawTransaction {
 }
 
 extension RawTransaction {
-    public init(value: BigInt, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
+    public init?(value: BigInt, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
+        guard let toAddress = Address(string: to) else { return nil }
         self.value = value
-        self.to = Address(string: to)!.raw
+        self.to = toAddress
         self.gasPrice = gasPrice
         self.gasLimit = gasLimit
         self.nonce = nonce
@@ -33,9 +34,10 @@ extension RawTransaction {
         self.data = Data()
     }
     
-    public init(drip: String, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, data: Data = Data(), storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
-        self.value = BigInt(drip)!
-        self.to = Address(string: to)!.raw
+    public init?(drip: BigInt, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, data: Data = Data(), storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
+        guard let toAddress = Address(string: to) else { return nil }
+        self.value = drip
+        self.to = toAddress
         self.gasPrice = gasPrice
         self.gasLimit = gasLimit
         self.nonce = nonce
@@ -62,7 +64,7 @@ extension RawTransaction: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         value = try container.decode(BigInt.self, forKey: .value)
-        to = try container.decode(AddressRaw.self, forKey: .to)
+        to = try container.decode(Address.self, forKey: .to)
         gasPrice = try container.decode(Int.self, forKey: .gasPrice)
         gasLimit = try container.decode(Int.self, forKey: .gasLimit)
         nonce = try container.decode(Int.self, forKey: .nonce)

@@ -20,7 +20,8 @@ let package = Package(
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.4.1"),
         .package(name: "TweetNacl", url: "https://github.com/lishuailibertine/tweetnacl-swiftwrap", from: "1.0.5"),
         .package(name: "Secp256k1Swift", url: "https://github.com/mathwallet/Secp256k1Swift.git", from: "1.2.0"),
-        .package(name:"BIP39swift", url: "https://github.com/mathwallet/BIP39swift", from: "1.0.1")
+        .package(name:"BIP39swift", url: "https://github.com/mathwallet/BIP39swift", from: "1.0.1"),
+        .package(name:"Base32Swift", url: "https://github.com/lishuailibertine/Base32Swift", from: "0.0.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -31,7 +32,8 @@ let package = Package(
                 "CryptoSwift",
                 .product(name: "BIP32Swift", package: "Secp256k1Swift"),
                 "TweetNacl",
-                "BIP39swift"
+                "BIP39swift",
+                "Base32Swift"
             ]
         ),
         .testTarget(

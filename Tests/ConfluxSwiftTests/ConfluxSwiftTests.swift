@@ -15,6 +15,5 @@ final class ConfluxSwiftTests: XCTestCase {
         } catch let error {
             debugPrint(error.localizedDescription)
         }
-        
     }
 }

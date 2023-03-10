@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Base32Swift",
+        "repositoryURL": "https://github.com/lishuailibertine/Base32Swift",
+        "state": {
+          "branch": null,
+          "revision": "643050c06a2f955f7e3c43f7c34e7f45a4e13b3d",
+          "version": "0.0.2"
+        }
+      },
+      {
         "package": "Base58Swift",
         "repositoryURL": "https://github.com/mathwallet/Base58Swift.git",
         "state": {
