@@ -14,7 +14,7 @@ public struct Address {
     public let address: String
     public let hexAddress: String
     public let netId: Int
-    private let data: Data
+    public let data: Data
     
     public init(data: Data, netId: Int) {
         self.address = Address.encodeData(data: data, netId: netId)
