@@ -45,8 +45,8 @@ extension Address {
     
     public static func encodeData(data: Data, netId: Int) -> String {
         let chainPrefix = Address.encodeNetId(netId: netId)
-        var payloadData = data
-        payloadData.insert(0, at: 0)
+        var payloadData = Data(repeating: 0, count: 1)
+        payloadData.append(data)
         let payload = ConfluxBase32.encode(payloadData)
         return "\(chainPrefix):\(payload)\(Address.createCheckSum(chainPrefix: chainPrefix, payload: payload))"
     }

@@ -16,4 +16,18 @@ final class ConfluxSwiftTests: XCTestCase {
             debugPrint(error.localizedDescription)
         }
     }
+    
+    func testClient() throws {
+        let reqeustExpectation = expectation(description: "Tests")
+        let client = ConfluxClient(url: URL(string: "https://test.confluxrpc.com")!)
+        DispatchQueue.global().async {
+            do {
+                let result = try client.getNextNonce(address: "cfxtest:aasm4c231py7j34fghntcfkdt2nm9xv1tu6jd3r1s7").wait()
+                debugPrint(result)
+            } catch let error {
+                debugPrint(error.localizedDescription)
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
 }

@@ -47,6 +47,15 @@
         }
       },
       {
+        "package": "PromiseKit",
+        "repositoryURL": "https://github.com/mxcl/PromiseKit.git",
+        "state": {
+          "branch": null,
+          "revision": "a739d4effcbafd177a699bac8a7ff343f4d0706c",
+          "version": "6.22.0"
+        }
+      },
+      {
         "package": "RIPEMDSwift",
         "repositoryURL": "https://github.com/mathwallet/RIPEMDSwift.git",
         "state": {

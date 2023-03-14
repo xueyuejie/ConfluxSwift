@@ -10,6 +10,7 @@ import BigInt
 
 public struct RawTransaction {
     public let value: BigInt
+    public var from: Address? = nil
     public let to: Address
     public let gasPrice: Int
     public let gasLimit: Int
@@ -21,9 +22,11 @@ public struct RawTransaction {
 }
 
 extension RawTransaction {
-    public init?(value: BigInt, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
+    public init?(value: BigInt, from: String, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
+        guard let fromAddress = Address(string: from) else { return nil }
         guard let toAddress = Address(string: to) else { return nil }
         self.value = value
+        self.from = fromAddress
         self.to = toAddress
         self.gasPrice = gasPrice
         self.gasLimit = gasLimit
@@ -34,9 +37,11 @@ extension RawTransaction {
         self.data = Data()
     }
     
-    public init?(drip: BigInt, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, data: Data = Data(), storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
+    public init?(value: BigInt,from: String, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, data: Data = Data(), storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
+        guard let fromAddress = Address(string: from) else { return nil }
         guard let toAddress = Address(string: to) else { return nil }
-        self.value = drip
+        self.value = value
+        self.from = fromAddress
         self.to = toAddress
         self.gasPrice = gasPrice
         self.gasLimit = gasLimit
