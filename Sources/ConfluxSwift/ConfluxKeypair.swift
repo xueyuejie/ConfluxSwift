@@ -24,8 +24,7 @@ public struct ConfluxKeypair {
         
         self.privateKey = privateKey
         self.publicKey = Data(pubKey.bytes[1..<pubKey.count])
-        let addressData = pubKey.sha3(.keccak256).suffix(20)
-        self.address = Address(data: addressData, netId: 1029)
+        self.address = Address(publicKey: self.publicKey, netId: 1029)
     }
     
     public init(seed: Data, path: String) throws {

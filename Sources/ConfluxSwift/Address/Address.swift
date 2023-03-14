@@ -23,6 +23,11 @@ public struct Address {
         self.data = data
     }
     
+    public init(publicKey: Data, netId: Int) {
+        let addressData = publicKey.sha3(.keccak256).suffix(20)
+        self.init(data: addressData, netId: netId)
+    }
+    
     public init?(string: String) {
         guard let hexAddress = Address.decode(cfxAddress: string), let prefix = string.components(separatedBy: ":").first, let net = Address.decodeNetId(prefix: prefix), let addressStr = Address.encodeHex(hexAddress: hexAddress, netId: net) else {
             return nil
