@@ -17,37 +17,60 @@ public struct ConfluxKeypair {
     public var publicKey: Data
     public var address: Address
     
-    public init(privateKey: Data) throws {
+    public init(privateKey: Data, netId: Int) throws {
         guard let pubKey = SECP256K1.privateToPublic(privateKey: privateKey, compressed: false) else {
             throw ConfluxKeypairError.invalidPrivateKey
         }
         
         self.privateKey = privateKey
         self.publicKey = Data(pubKey.bytes[1..<pubKey.count])
-        self.address = Address(publicKey: self.publicKey, netId: 1029)
+        self.address = Address(publicKey: self.publicKey, netId: netId)
     }
     
-    public init(seed: Data, path: String) throws {
+    public init(seed: Data, netId: Int, path: String) throws {
         guard let hdnode = HDNode(seed: seed),
               let derivedNode = hdnode.derive(path: "\(path)/0"),
               let privateKey = derivedNode.privateKey else {
             throw ConfluxKeypairError.invalidSeed
         }
-        try self.init(privateKey: privateKey)
+        try self.init(privateKey: privateKey, netId: netId)
     }
     
-    public init(mnemonics: String, path: String = "m/44'/503'/0'/0") throws {
+    public init(mnemonics: String, netId: Int, path: String = "m/44'/503'/0'/0") throws {
         guard let mnemonicSeed = BIP39.seedFromMmemonics(mnemonics) else {
             throw ConfluxKeypairError.invalidMnemonic
         }
-        try self.init(seed: mnemonicSeed, path: path)
+        try self.init(seed: mnemonicSeed, netId: netId, path: path)
     }
     
-    public static func randomKeyPair() throws -> ConfluxKeypair {
+    public static func randomKeyPair(netId: Int) throws -> ConfluxKeypair {
         guard let mnemonic = try? BIP39.generateMnemonics(bitsOfEntropy: 128) else{
             throw ConfluxKeypairError.invalidMnemonic
         }
-        return try ConfluxKeypair(mnemonics: mnemonic)
+        return try ConfluxKeypair(mnemonics: mnemonic, netId: netId)
+    }
+}
+
+// MARK: - Sign
+
+extension ConfluxKeypair {
+    public func sign(message: Data) throws -> Data {
+        let hash = message.sha3(.keccak256)
+        let (compressedSignature, _) = SECP256K1.signForRecovery(hash: hash, privateKey: self.privateKey)
+        
+        guard let retrunSignature = compressedSignature else {
+            throw ConfluxKeypairError.invalidMessage
+        }
+        
+        return retrunSignature
+    }
+    
+    public func signVerify(message: Data, signature: Data) -> Bool {
+        let hash = message.sha3(.keccak256)
+        guard let publickey = SECP256K1.recoverPublicKey(hash: message, signature: signature), publickey == self.publicKey else {
+            return false
+        }
+        return true
     }
 }
 
@@ -57,6 +80,7 @@ public enum ConfluxKeypairError: String, LocalizedError {
     case invalidDerivePath
     case invalidSeed
     case invalidPrivateKey
+    case invalidMessage
     case unknown
     
     public var errorDescription: String? {
