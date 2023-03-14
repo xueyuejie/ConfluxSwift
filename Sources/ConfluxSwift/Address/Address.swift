@@ -29,7 +29,10 @@ public struct Address {
     }
     
     public init?(string: String) {
-        guard let hexAddress = Address.decode(cfxAddress: string), let prefix = string.components(separatedBy: ":").first, let net = Address.decodeNetId(prefix: prefix), let addressStr = Address.encodeHex(hexAddress: hexAddress, netId: net) else {
+        guard let hexAddress = Address.decode(cfxAddress: string),
+              let prefix = string.components(separatedBy: ":").first,
+              let net = Address.decodeNetId(prefix: prefix),
+              let addressStr = Address.encodeHex(hexAddress: hexAddress, netId: net) else {
             return nil
         }
         self.hexAddress = hexAddress
