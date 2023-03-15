@@ -10,8 +10,10 @@ final class ConfluxSwiftTests: XCTestCase {
     
     func testKeypairExample() throws {
         do {
-            let keypair = try ConfluxKeypair(privateKey: Data(hex: "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"))
-            debugPrint(keypair.privateKey.toHexString())
+            let keypair = try ConfluxKeypair(privateKey: Data(hex: "e21f5531e3a36255da98b9da7a2dff944b99fd46d2a770c5fd81cc759b29376f"), netId: 1029)
+            debugPrint(keypair.publicKey.toHexString())
+            debugPrint(keypair.address.address)
+//            debugPrint(Address(data: Data(hex: "106d49f8505410eb4e671d51f7d96d2c87807b09"), netId: 1029).address)
         } catch let error {
             debugPrint(error.localizedDescription)
         }

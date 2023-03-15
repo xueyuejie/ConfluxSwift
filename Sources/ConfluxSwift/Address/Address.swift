@@ -24,7 +24,8 @@ public struct Address {
     }
     
     public init(publicKey: Data, netId: Int) {
-        let addressData = publicKey.sha3(.keccak256).suffix(20)
+        let hashData = publicKey.sha3(.keccak256).suffix(20)
+        let addressData = AddressType.user.normalize(hash: hashData)
         self.init(data: addressData, netId: netId)
     }
     

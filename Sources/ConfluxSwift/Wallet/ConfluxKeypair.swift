@@ -53,26 +53,22 @@ public struct ConfluxKeypair {
 
 // MARK: - Sign
 
-extension ConfluxKeypair {
-    public func sign(message: Data) throws -> Data {
-        let hash = message.sha3(.keccak256)
-        let (compressedSignature, _) = SECP256K1.signForRecovery(hash: hash, privateKey: self.privateKey)
-        
-        guard let retrunSignature = compressedSignature else {
-            throw ConfluxKeypairError.invalidMessage
-        }
-        
-        return retrunSignature
-    }
-    
-    public func signVerify(message: Data, signature: Data) -> Bool {
-        let hash = message.sha3(.keccak256)
-        guard let publickey = SECP256K1.recoverPublicKey(hash: message, signature: signature), publickey == self.publicKey else {
-            return false
-        }
-        return true
-    }
-}
+//extension ConfluxKeypair {
+//    public func sign(message: Data) throws -> Data {
+//        let hash = message.sha3(.keccak256)
+//        guard let retrunSignature = privateKey.sign(hash: hash) else {
+//            throw ConfluxKeypairError.invalidMessage
+//        }
+//        return retrunSignature
+//    }
+//
+//    public func signVerify(message: Data, signature: Data) -> Bool {
+//        guard let publickey = SECP256K1.recoverPublicKey(hash: message, signature: signature), publickey == self.publicKey else {
+//            return false
+//        }
+//        return true
+//    }
+//}
 
 // MARK: Error
 public enum ConfluxKeypairError: String, LocalizedError {
