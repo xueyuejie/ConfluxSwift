@@ -18,3 +18,9 @@ public struct ResultError: Codable {
     public let code: Int
     public let message: String
 }
+
+public struct EstimateGasAndCollateral: Codable {
+    public let gasLimit: String
+    public let gasUsed: String
+    public let storageCollateralized: String
+}

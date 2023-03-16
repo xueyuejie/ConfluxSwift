@@ -90,7 +90,7 @@ extension Address {
         guard let raw = ConfluxBase32.decode(payload) else {
             return nil
         }
-        let rawData = raw[2..<raw.count]
+        let rawData = raw[1..<raw.count]
         return rawData.toHexString()
     }
 }

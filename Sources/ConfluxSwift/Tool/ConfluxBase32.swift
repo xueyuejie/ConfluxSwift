@@ -17,7 +17,7 @@ public struct ConfluxBase32 {
     }
     
     public static func decode(_ base32Str: String) -> Data? {
-        if isValid(base32Str: base32Str) {
+        if !isValid(base32Str: base32Str) {
             return nil
         }
         let rawbase32Str = toStandard(base32Str: base32Str)
@@ -53,8 +53,8 @@ public struct ConfluxBase32 {
     private static func toStandard(base32Str: String) -> String {
         var result = ""
         for c in base32Str {
-            let index = STANDARD_CHARSET.firstIndex(of: "\(c)")!
-            result = "\(result)\(CONFLUX_CHARSET[index])"
+            let index = CONFLUX_CHARSET.firstIndex(of: "\(c)")!
+            result = "\(result)\(STANDARD_CHARSET[index])"
         }
         return result
     }

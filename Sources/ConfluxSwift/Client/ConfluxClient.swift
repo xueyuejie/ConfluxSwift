@@ -57,16 +57,27 @@ public class ConfluxClient: ConfluxBaseClient {
        return sendRPC(method: "cfx_sendRawTransaction", params: [rawTransaction])
     }
     
-    public func estimateGasAndCollateral(rawTransaction: RawTransaction) -> Promise<String> {
-        let parameters = [
-            "from": rawTransaction.from?.address ?? "",
-            "to": rawTransaction.to.address,
-            "gas": rawTransaction.gasLimit,
-            "gasPrice": rawTransaction.gasPrice,
-            "nonce": rawTransaction.nonce,
-            "value": rawTransaction.value,
-            "data": rawTransaction.data.toHexString()
-        ] as? [String: Any]
-        return sendRPC(method:  "cfx_estimateGasAndCollateral", params: [parameters ?? [String: Any]()])
+    public func estimateGasAndCollateral(rawTransaction: RawTransaction) -> Promise<EstimateGasAndCollateral> {
+        return Promise<EstimateGasAndCollateral> { seal in
+            var parameters = [
+                "from": rawTransaction.from?.address ?? "",
+                "to": rawTransaction.to.address,
+                "gasPrice": String(rawTransaction.gasPrice, radix: 16).addPrefix("0x"),
+                "nonce": String(rawTransaction.nonce, radix: 16).addPrefix("0x"),
+                "value": String(rawTransaction.value, radix: 16).addPrefix("0x")
+            ] as? [String: Any]
+            if rawTransaction.data.count > 0 {
+                parameters?["data"] = rawTransaction.data.toHexString().addPrefix("0x")
+            }
+            sendRPC(method:  "cfx_estimateGasAndCollateral", params: [parameters ?? [String: Any]()]).done { (result: EstimateGasAndCollateral) in
+                seal.fulfill(EstimateGasAndCollateral(
+                    gasLimit: BigInt(result.gasLimit.cfxStripHexPrefix(), radix: 16)?.description ?? "0",
+                    gasUsed: BigInt(result.gasUsed.cfxStripHexPrefix(), radix: 16)?.description ?? "0",
+                    storageCollateralized: BigInt(result.storageCollateralized.cfxStripHexPrefix(), radix: 16)?.description ?? "0")
+                )
+            }.catch { error in
+                seal.reject(error)
+            }
+        }
     }
 }

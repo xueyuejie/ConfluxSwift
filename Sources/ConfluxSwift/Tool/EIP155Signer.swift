@@ -23,14 +23,14 @@ public struct EIP155Signer {
             throw ConfluxError.otherError("sign error")
         }
         let tranArr = [rawTransaction.nonce,
-                      rawTransaction.gasPrice,
-                      rawTransaction.gasLimit,
-                      rawTransaction.to.data,
-                      rawTransaction.value,
-                      rawTransaction.storageLimit,
-                      rawTransaction.epochHeight,
-                      rawTransaction.chainId,
-                      rawTransaction.data] as [Any]
+                       rawTransaction.gasPrice,
+                       rawTransaction.gasLimit,
+                       rawTransaction.to.data,
+                       rawTransaction.value,
+                       rawTransaction.storageLimit,
+                       rawTransaction.epochHeight,
+                       rawTransaction.chainId,
+                       rawTransaction.data] as [Any]
         
         let rlp = try RLP.encode([
             tranArr,

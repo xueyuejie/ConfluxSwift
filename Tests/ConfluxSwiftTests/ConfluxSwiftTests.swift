@@ -1,4 +1,5 @@
 import XCTest
+import BigInt
 @testable import ConfluxSwift
 
 final class ConfluxSwiftTests: XCTestCase {
@@ -26,6 +27,23 @@ final class ConfluxSwiftTests: XCTestCase {
             do {
                 let result = try client.getNextNonce(address: "cfxtest:aasm4c231py7j34fghntcfkdt2nm9xv1tu6jd3r1s7").wait()
                 debugPrint(result)
+            } catch let error {
+                debugPrint(error.localizedDescription)
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
+    
+    func testEstimateGasAndCollateral() throws {
+        let reqeustExpectation = expectation(description: "Tests")
+        let client = ConfluxClient(url: URL(string: "https://main.confluxrpc.com")!)
+        DispatchQueue.global().async {
+            do {
+                let transaction = RawTransaction(value: BigInt(1900000000), from: "cfx:aamnw6ffth13kr6tpwkk00yam6r62jwu7erykmhh3m", to: "cfx:aamjy3abae3j0ud8ys0npt38ggnunk5r4ps2pg8vcc", gasPrice: 22, gasLimit: 222, nonce: 148)
+                let result = try client.estimateGasAndCollateral(rawTransaction: transaction!).wait()
+                debugPrint(result.gasLimit)
+                debugPrint(result.gasUsed)
+                debugPrint(result.storageCollateralized)
             } catch let error {
                 debugPrint(error.localizedDescription)
             }

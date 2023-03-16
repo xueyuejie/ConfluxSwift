@@ -22,22 +22,7 @@ public struct RawTransaction {
 }
 
 extension RawTransaction {
-    public init?(value: BigInt, from: String, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
-        guard let fromAddress = Address(string: from) else { return nil }
-        guard let toAddress = Address(string: to) else { return nil }
-        self.value = value
-        self.from = fromAddress
-        self.to = toAddress
-        self.gasPrice = gasPrice
-        self.gasLimit = gasLimit
-        self.nonce = nonce
-        self.chainId = chainId
-        self.storageLimit = storageLimit
-        self.epochHeight = epochHeight
-        self.data = Data()
-    }
-    
-    public init?(value: BigInt,from: String, to: String, gasPrice: Int, gasLimit: Int, nonce: Int, data: Data = Data(), storageLimit: BigInt, epochHeight: BigInt, chainId: Int) {
+    public init?(value: BigInt,from: String, to: String, gasPrice: Int, gasLimit: Int = 0, nonce: Int, data: Data = Data(), storageLimit: BigInt = BigInt(0), epochHeight: BigInt = BigInt(0), chainId: Int = 1029) {
         guard let fromAddress = Address(string: from) else { return nil }
         guard let toAddress = Address(string: to) else { return nil }
         self.value = value

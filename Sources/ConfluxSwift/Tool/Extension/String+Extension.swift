@@ -15,4 +15,11 @@ extension String {
         }
         return self
     }
+    
+    func addPrefix(_ prefix: String) -> String {
+        if self.hasPrefix(prefix) {
+            return self
+        }
+        return "\(prefix)\(self)"
+    }
 }
