@@ -39,7 +39,7 @@ public class ConfluxClient: ConfluxBaseClient {
         }
     }
     
-    public func getNextNonce(address: String) -> Promise<Int> {
+    public func getNextNonce(address: String) -> Promise<Int64> {
         return Promise<Int> { seal in
              sendRPC(method: "cfx_getNextNonce", params: [address]).done { (result: String) in
                 guard let number = Int(result.lowercased().cfxStripHexPrefix(), radix: 16) else {
