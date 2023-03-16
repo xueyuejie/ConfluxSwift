@@ -27,8 +27,10 @@ final class ConfluxSwiftTests: XCTestCase {
             do {
                 let result = try client.getGasprice().wait()
                 debugPrint(result)
+                reqeustExpectation.fulfill()
             } catch let error {
                 debugPrint(error.localizedDescription)
+                reqeustExpectation.fulfill()
             }
         }
         wait(for: [reqeustExpectation], timeout: 30)
@@ -44,8 +46,10 @@ final class ConfluxSwiftTests: XCTestCase {
                 debugPrint(result.gasLimit)
                 debugPrint(result.gasUsed)
                 debugPrint(result.storageCollateralized)
+                reqeustExpectation.fulfill()
             } catch let error {
                 debugPrint(error.localizedDescription)
+                reqeustExpectation.fulfill()
             }
         }
         wait(for: [reqeustExpectation], timeout: 30)
