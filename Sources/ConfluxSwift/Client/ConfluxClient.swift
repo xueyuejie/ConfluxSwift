@@ -57,6 +57,20 @@ public class ConfluxClient: ConfluxBaseClient {
        return sendRPC(method: "cfx_sendRawTransaction", params: [rawTransaction])
     }
     
+    public func getGasprice() -> Promise<Int> {
+        return Promise<Int> { seal in
+             sendRPC(method: "cfx_gasPrice").done { (result: String) in
+                guard let number = Int(result.lowercased().cfxStripHexPrefix(), radix: 16) else {
+                    seal.reject(ConfluxError.unknow)
+                    return
+                }
+                seal.fulfill(number)
+            }.catch { error in
+                seal.reject(error)
+            }
+        }
+    }
+    
     public func estimateGasAndCollateral(rawTransaction: RawTransaction) -> Promise<EstimateGasAndCollateral> {
         return Promise<EstimateGasAndCollateral> { seal in
             var parameters = [
