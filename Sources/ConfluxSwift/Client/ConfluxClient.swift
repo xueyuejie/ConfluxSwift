@@ -14,11 +14,7 @@ public class ConfluxClient: ConfluxBaseClient {
     public func getEpochNumber() -> Promise<Int> {
         return Promise<Int> { seal in
             sendRPC(method: "cfx_epochNumber").done { (result: String) in
-                guard let number = Int(result.lowercased().cfxStripHexPrefix(), radix: 16) else {
-                    seal.reject(ConfluxError.unknow)
-                    return
-                }
-                seal.fulfill(number)
+                seal.fulfill(Int(result.lowercased().cfxStripHexPrefix(), radix: 16) ?? 0)
             }.catch { error in
                 seal.reject(error)
             }
@@ -33,6 +29,32 @@ public class ConfluxClient: ConfluxBaseClient {
                     return
                 }
                 seal.fulfill(number)
+            }.catch { error in
+                seal.reject(error)
+            }
+        }
+    }
+    
+    public func getTokenBalance(address: String, contractAddress: String) -> Promise<BigInt> {
+        return Promise<BigInt> { seal in
+            guard let addressHex = Address(string: address)?.hexAddress else {
+                seal.reject(ConfluxError.otherError("invalid address"))
+                return
+            }
+            let dataHex = ConfluxToken.ContractFunctions.balanceOf(address: addressHex).data.toHexString().addPrefix("0x")
+            call(to: contractAddress, data: dataHex).done { result in
+                seal.fulfill(BigInt(result.lowercased().cfxStripHexPrefix(), radix: 16) ?? BigInt.zero)
+            }.catch { error in
+                seal.reject(error)
+            }
+        }
+    }
+    
+    func getTokenDecimal(contractAddress: String) -> Promise<Int>  {
+        let data = ConfluxToken.ContractFunctions.decimals.data.toHexString().addPrefix("0x")
+        return Promise<Int> { seal in
+            call(to: contractAddress, data: data).done { result in
+                seal.fulfill(Int(result.lowercased().cfxStripHexPrefix(), radix: 16) ?? 0)
             }.catch { error in
                 seal.reject(error)
             }

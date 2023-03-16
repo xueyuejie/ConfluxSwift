@@ -20,12 +20,12 @@ final class ConfluxSwiftTests: XCTestCase {
         }
     }
     
-    func testClient() throws {
+    func testClientExample() throws {
         let reqeustExpectation = expectation(description: "Tests")
         let client = ConfluxClient(url: URL(string: "https://main.confluxrpc.com")!)
         DispatchQueue.global().async {
             do {
-                let result = try client.getGasprice().wait()
+                let result = try client.getGasPrice().wait()
                 debugPrint(result)
                 reqeustExpectation.fulfill()
             } catch let error {
@@ -36,7 +36,7 @@ final class ConfluxSwiftTests: XCTestCase {
         wait(for: [reqeustExpectation], timeout: 30)
     }
     
-    func testEstimateGasAndCollateral() throws {
+    func testEstimateGasAndCollateralExample() throws {
         let reqeustExpectation = expectation(description: "Tests")
         let client = ConfluxClient(url: URL(string: "https://main.confluxrpc.com")!)
         DispatchQueue.global().async {
@@ -46,6 +46,22 @@ final class ConfluxSwiftTests: XCTestCase {
                 debugPrint(result.gasLimit)
                 debugPrint(result.gasUsed)
                 debugPrint(result.storageCollateralized)
+                reqeustExpectation.fulfill()
+            } catch let error {
+                debugPrint(error.localizedDescription)
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
+    
+    func testTokenBalanceExample() throws {
+        let reqeustExpectation = expectation(description: "Tests")
+        let client = ConfluxClient(url: URL(string: "https://main.confluxrpc.com")!)
+        DispatchQueue.global().async {
+            do {
+                let result = try client.getTokenBalance(address: "cfx:aamnw6ffth13kr6tpwkk00yam6r62jwu7erykmhh3m", contractAddress: "cfx:acf2rcsh8payyxpg6xj7b0ztswwh81ute60tsw35j7").wait()
+                debugPrint(result)
                 reqeustExpectation.fulfill()
             } catch let error {
                 debugPrint(error.localizedDescription)

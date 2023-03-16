@@ -146,4 +146,41 @@ extension ConfluxBaseClient {
         ] as [String : Any]
         return POST(parameters: parameters)
     }
+    
+    public func call(from: String? = nil,
+                     to: String,
+                     gasLimit: Int? = nil,
+                     gasPrice: Int? = nil,
+                     value: Int? = nil,
+                     data: String? = nil) -> Promise<String> {
+        var parameters: [String: Any] = [:]
+        parameters["to"] = to
+        
+        if let fromAddress = from {
+            parameters["from"] = fromAddress
+        }
+        
+        if let gas = gasLimit {
+            parameters["gas"] = gas
+        }
+        
+        if let gasPrice = gasPrice {
+            parameters["gasPrice"] = gasPrice
+        }
+        
+        if let value = value {
+            parameters["value"] = value
+        }
+        
+        if let data = data {
+            parameters["data"] = data
+        }
+        return Promise<String> { seal in
+            sendRPC(method:  "cfx_call", params: [parameters, "latest_state"]).done { (result: String) in
+                seal.fulfill(result)
+            }.catch { error in
+                seal.reject(error)
+            }
+        }
+    }
 }

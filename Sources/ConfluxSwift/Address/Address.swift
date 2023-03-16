@@ -7,6 +7,7 @@
 
 import Foundation
 import CryptoSwift
+
 public struct Address {
     public static let cfxAddressLength = 42
     private static let checksumLength = 8
@@ -15,18 +16,20 @@ public struct Address {
     public let hexAddress: String
     public let netId: Int
     public let data: Data
+    private let addressType: AddressType
     
-    public init(data: Data, netId: Int) {
+    public init(data: Data, netId: Int, addressType: AddressType = AddressType.user) {
         self.address = Address.encodeData(data: data, netId: netId)
         self.hexAddress = data.toHexString()
         self.netId = netId
         self.data = data
+        self.addressType = addressType
     }
     
     public init(publicKey: Data, netId: Int) {
         let hashData = publicKey.sha3(.keccak256).suffix(20)
         let addressData = AddressType.user.normalize(hash: hashData)
-        self.init(data: addressData, netId: netId)
+        self.init(data: addressData, netId: netId, addressType: AddressType.user)
     }
     
     public init?(string: String) {
@@ -40,6 +43,7 @@ public struct Address {
         self.netId = net
         self.address = addressStr
         self.data = Data(hex: hexAddress)
+        self.addressType = Address.addressType(hexString: hexAddress)
     }
 }
 
@@ -92,6 +96,17 @@ extension Address {
         }
         let rawData = raw[1..<raw.count]
         return rawData.toHexString()
+    }
+    
+    public static func addressType(hexString: String) -> AddressType {
+        let addressHex = hexString.addPrefix("0x")
+        if addressHex.hasPrefix("0x0") {
+            return AddressType.builtin
+        } else if addressHex.hasPrefix("0x1") {
+            return AddressType.user
+        } else {
+            return AddressType.contract
+        }
     }
 }
 
