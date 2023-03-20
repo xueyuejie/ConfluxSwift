@@ -13,7 +13,7 @@ import Secp256k1Swift
 
 public struct ConfluxKeypair {
     public var mnemonics: String?
-    public var privateKey: Data
+    public var privateKey: PrivateKey
     public var publicKey: Data
     public var address: Address
     
@@ -22,7 +22,7 @@ public struct ConfluxKeypair {
             throw ConfluxKeypairError.invalidPrivateKey
         }
         
-        self.privateKey = privateKey
+        self.privateKey = PrivateKey(raw: privateKey)
         self.publicKey = Data(pubKey.bytes[1..<pubKey.count])
         self.address = Address(publicKey: self.publicKey, netId: netId)
     }
@@ -53,22 +53,28 @@ public struct ConfluxKeypair {
 
 // MARK: - Sign
 
-//extension ConfluxKeypair {
-//    public func sign(message: Data) throws -> Data {
-//        let hash = message.sha3(.keccak256)
-//        guard let retrunSignature = privateKey.sign(hash: hash) else {
-//            throw ConfluxKeypairError.invalidMessage
-//        }
-//        return retrunSignature
-//    }
-//
-//    public func signVerify(message: Data, signature: Data) -> Bool {
-//        guard let publickey = SECP256K1.recoverPublicKey(hash: message, signature: signature), publickey == self.publicKey else {
-//            return false
-//        }
-//        return true
-//    }
-//}
+extension ConfluxKeypair {
+    public func sign(message: Data) throws -> Data {
+        let hash = message.sha3(.keccak256)
+        guard let retrunSignature = privateKey.sign(hash: hash) else {
+            throw ConfluxKeypairError.invalidMessage
+        }
+        return retrunSignature
+    }
+    
+    public func sign(transaction: RawTransaction, chanId: Int = 1029) throws -> Data {
+        let signer = EIP155Signer(chainID: chanId)
+        let data = try signer.sign(transaction, privateKey: self.privateKey)
+        return data
+    }
+
+    public func signVerify(message: Data, signature: Data) -> Bool {
+        guard let publickey = SECP256K1.recoverPublicKey(hash: message, signature: signature), publickey == self.publicKey else {
+            return false
+        }
+        return true
+    }
+}
 
 // MARK: Error
 public enum ConfluxKeypairError: String, LocalizedError {
