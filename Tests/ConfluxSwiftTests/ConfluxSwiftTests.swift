@@ -70,4 +70,15 @@ final class ConfluxSwiftTests: XCTestCase {
         }
         wait(for: [reqeustExpectation], timeout: 30)
     }
+    
+    func testSignExample() throws {
+        do {
+            let data = "Hello World".data(using: .utf8)!
+            let keypair = try ConfluxKeypair(privateKey: Data(hex: "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"), netId: 1029)
+            let signature = try keypair.sign(message: data)
+            XCTAssertEqual(signature.toHexString(), "6e913e2b76459f19ebd269b82b51a70e912e909b2f5c002312efc27bcc280f3c29134d382aad0dbd3f0ccc9f0eb8f1dbe3f90141d81574ebb6504156b0d7b95f01")
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+    }
 }

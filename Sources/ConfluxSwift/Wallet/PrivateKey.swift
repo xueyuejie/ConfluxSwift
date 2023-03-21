@@ -26,7 +26,7 @@ public struct PrivateKey {
    /// - Returns: signiture in data format
    /// - Throws: .cryptoError(.failedToSign) when failed to sign
    public func sign(hash: Data) -> Data? {
-       let (serializedSignature,_) = SECP256K1.signForRecovery(hash: hash, privateKey: self.raw)
+       let (serializedSignature,_) = SECP256K1.signForRecovery(hash: hash, privateKey: self.raw, useExtraVer: false)
        return serializedSignature
    }
 }

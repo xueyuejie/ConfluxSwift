@@ -19,7 +19,8 @@ public struct EIP155Signer {
     
     public func sign(_ rawTransaction: RawTransaction, privateKey: PrivateKey) throws -> Data {
         let transactionHash = try hash(rawTransaction: rawTransaction)
-        guard let signiture = privateKey.sign(hash: transactionHash),let unmarshaledSignature = calculateRSV(signature: signiture) else {
+        guard let signiture = privateKey.sign(hash: transactionHash),
+              let unmarshaledSignature = calculateRSV(signature: signiture) else {
             throw ConfluxError.otherError("sign error")
         }
         let tranArr = [rawTransaction.nonce,
