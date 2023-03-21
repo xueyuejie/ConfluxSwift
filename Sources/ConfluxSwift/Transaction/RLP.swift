@@ -21,7 +21,8 @@ public struct RLP {
         
         case let int as Int:
             encoded = encode(bint: BigInt(int))
-        
+        case let uint8 as UInt8:
+            encoded = encode(bint: BigInt(uint8))
         case let data as Data:
             encoded = encode(data: data)
             
@@ -33,7 +34,7 @@ public struct RLP {
         }
         
         guard let data = encoded else {
-            throw ConfluxError.unknow
+            throw ConfluxError.otherError("transaction encode error")
         }
         
         return data

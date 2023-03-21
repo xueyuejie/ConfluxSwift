@@ -81,4 +81,14 @@ final class ConfluxSwiftTests: XCTestCase {
             debugPrint(error.localizedDescription)
         }
     }
+    
+    func testSignTransactionExample() throws {
+        do {
+           let transaction = RawTransaction(value: BigInt(10000), from: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8", to: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8", gasPrice: 100000,gasLimit: 21000, nonce: 104)!
+            let keypair = try ConfluxKeypair(privateKey: Data(hex: "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"), netId: 1029)
+            let signature = try keypair.sign(transaction: transaction, chanId: 1029)
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+    }
 }
