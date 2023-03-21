@@ -2,7 +2,7 @@
 //  ConfluxBase32.swift
 //  
 //
-//  Created by 薛跃杰 on 2023/3/10.
+//  Created by xgblin on 2023/3/10.
 //
 
 import Foundation

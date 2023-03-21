@@ -2,7 +2,7 @@
 //  ConfluxBaseClient.swift
 //  
 //
-//  Created by 薛跃杰 on 2023/3/13.
+//  Created by xgblin on 2023/3/13.
 //
 
 import Foundation

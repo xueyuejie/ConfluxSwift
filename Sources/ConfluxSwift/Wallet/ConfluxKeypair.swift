@@ -2,7 +2,7 @@
 //  ConfluxKeypair.swift
 //  
 //
-//  Created by 薛跃杰 on 2023/3/9.
+//  Created by xgblin on 2023/3/9.
 //
 
 import Foundation
@@ -41,6 +41,7 @@ public struct ConfluxKeypair {
             throw ConfluxKeypairError.invalidMnemonic
         }
         try self.init(seed: mnemonicSeed, netId: netId, path: path)
+        self.mnemonics = mnemonics
     }
     
     public static func randomKeyPair(netId: Int) throws -> ConfluxKeypair {

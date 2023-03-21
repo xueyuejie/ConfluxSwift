@@ -2,7 +2,7 @@
 //  ConfluxToken.swift
 //  
 //
-//  Created by 薛跃杰 on 2023/3/16.
+//  Created by xgblin on 2023/3/16.
 //
 
 import Foundation
