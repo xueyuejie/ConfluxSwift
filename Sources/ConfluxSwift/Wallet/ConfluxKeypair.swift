@@ -29,14 +29,14 @@ public struct ConfluxKeypair {
     
     public init(seed: Data, netId: Int, path: String) throws {
         guard let hdnode = HDNode(seed: seed),
-              let derivedNode = hdnode.derive(path: "\(path)/0"),
+              let derivedNode = hdnode.derive(path: path),
               let privateKey = derivedNode.privateKey else {
             throw ConfluxKeypairError.invalidSeed
         }
         try self.init(privateKey: privateKey, netId: netId)
     }
     
-    public init(mnemonics: String, netId: Int, path: String = "m/44'/503'/0'/0") throws {
+    public init(mnemonics: String, netId: Int, path: String = "m/44'/503'/0'/0/0") throws {
         guard let mnemonicSeed = BIP39.seedFromMmemonics(mnemonics) else {
             throw ConfluxKeypairError.invalidMnemonic
         }
