@@ -12,17 +12,17 @@ public struct RawTransaction {
     public let value: BigUInt
     public var from: Address? = nil
     public let to: Address
-    public let gasPrice: Int
-    public let gasLimit: Int
-    public let nonce: Int
-    public let chainId: Int
+    public let gasPrice: BigUInt
+    public let gasLimit: BigUInt
+    public let nonce: BigUInt
+    public let chainId: BigUInt
     public var storageLimit: BigUInt
     public var epochHeight: BigUInt
     public var data: Data
 }
 
 extension RawTransaction {
-    public init?(value: BigUInt,from: String, to: String, gasPrice: Int, gasLimit: Int = 0, nonce: Int, data: Data = Data(), storageLimit: BigUInt = BigUInt(0), epochHeight: BigUInt = BigUInt(0), chainId: Int = 1029) {
+    public init?(value: BigUInt,from: String, to: String, gasPrice: BigUInt, gasLimit: BigUInt = BigUInt(0), nonce: BigUInt, data: Data = Data(), storageLimit: BigUInt = BigUInt(0), epochHeight: BigUInt = BigUInt(0), chainId: BigUInt = BigUInt(1029)) {
         guard let fromAddress = Address(string: from) else { return nil }
         guard let toAddress = Address(string: to) else { return nil }
         self.value = value
@@ -36,45 +36,4 @@ extension RawTransaction {
         self.epochHeight = epochHeight
         self.data = data
     }
-}
-
-extension RawTransaction: Codable {
-    private enum CodingKeys: String, CodingKey {
-        case value
-        case to
-        case gasPrice
-        case gasLimit
-        case nonce
-        case chainId
-        case storageLimit
-        case epochHeight
-        case data
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        value = try container.decode(BigUInt.self, forKey: .value)
-        to = try container.decode(Address.self, forKey: .to)
-        gasPrice = try container.decode(Int.self, forKey: .gasPrice)
-        gasLimit = try container.decode(Int.self, forKey: .gasLimit)
-        nonce = try container.decode(Int.self, forKey: .nonce)
-        chainId = try container.decode(Int.self, forKey: .chainId)
-        storageLimit = try container.decode(BigUInt.self, forKey: .storageLimit)
-        epochHeight = try container.decode(BigUInt.self, forKey: .epochHeight)
-        data = try container.decode(Data.self, forKey: .data)
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(value, forKey: .value)
-        try container.encode(to, forKey: .to)
-        try container.encode(gasPrice, forKey: .gasPrice)
-        try container.encode(gasLimit, forKey: .gasLimit)
-        try container.encode(nonce, forKey: .nonce)
-        try container.encode(chainId, forKey: .chainId)
-        try container.encode(storageLimit, forKey: .storageLimit)
-        try container.encode(epochHeight, forKey: .epochHeight)
-        try container.encode(data, forKey: .data)
-    }
-    
 }
