@@ -79,7 +79,7 @@ final class ConfluxSwiftTests: XCTestCase {
                 guard let addressHex = Address(string: "cfx:aamnw6ffth13kr6tpwkk00yam6r62jwu7erykmhh3m")?.hexAddress else {
                     return
                 }
-                let contract = ConfluxToken.ContractFunctions.transfer(address: addressHex, amount: BigInt(0))
+                let contract = ConfluxToken.ContractFunctions.transfer(address: addressHex, amount: BigUInt(0))
                 let transaction = RawTransaction(to: "cfx:acf2rcsh8payyxpg6xj7b0ztswwh81ute60tsw35j7",
                                              data: contract.data)
                 let result = try client.estimateGasAndCollateral(rawTransaction: transaction!).wait()

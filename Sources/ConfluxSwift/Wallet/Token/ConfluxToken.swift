@@ -51,7 +51,7 @@ public struct ConfluxToken {
     /// - Parameter:
     ///    - amount: amount in string format
     /// - Returns: BigInt value powered by (10 * decimal)
-    private func power(amount: String) throws -> BigInt {
+    private func power(amount: String) throws -> BigUInt {
         let components = amount.split(separator: ".")
         
         // components.count must be 1 or 2. this method accepts only integer or decimal value
@@ -60,11 +60,11 @@ public struct ConfluxToken {
             throw ConfluxError.otherError("invalid contract token amout")
         }
         
-        guard let integer = BigInt(components[0], radix: 10) else {
+        guard let integer = BigUInt(components[0], radix: 10) else {
             throw ConfluxError.otherError("invalid contract token amout")
         }
         
-        let poweredInteger = integer * (BigInt(10) * BigInt(decimal))
+        let poweredInteger = integer * (BigUInt(10) * BigUInt(decimal))
         
         if components.count == 2 {
             let count = components[1].count
@@ -73,11 +73,11 @@ public struct ConfluxToken {
                 throw ConfluxError.otherError("invalid contract token amout")
             }
             
-            guard let digit = BigInt(components[1], radix: 10) else {
+            guard let digit = BigUInt(components[1], radix: 10) else {
                 throw ConfluxError.otherError("invalid contract token amout")
             }
             
-            let poweredDigit = digit * (BigInt(10) * BigInt(decimal - count))
+            let poweredDigit = digit * (BigUInt(10) * BigUInt(decimal - count))
             return poweredInteger + poweredDigit
         } else {
             return poweredInteger
@@ -98,7 +98,7 @@ public struct ConfluxToken {
 extension ConfluxToken {
     public enum ContractFunctions {
         case balanceOf(address: String)
-        case transfer(address: String, amount: BigInt)
+        case transfer(address: String, amount: BigUInt)
         case decimals
         
         var methodSignature: Data {
