@@ -71,6 +71,28 @@ final class ConfluxSwiftTests: XCTestCase {
         wait(for: [reqeustExpectation], timeout: 30)
     }
     
+    func testEstimateGasExample() throws {
+        let reqeustExpectation = expectation(description: "Tests")
+        let client = ConfluxClient(url: URL(string: "https://main.confluxrpc.com")!)
+        DispatchQueue.global().async {
+            do {
+                guard let addressHex = Address(string: "cfx:aamnw6ffth13kr6tpwkk00yam6r62jwu7erykmhh3m")?.hexAddress else {
+                    return
+                }
+                let contract = ConfluxToken.ContractFunctions.transfer(address: addressHex, amount: BigInt(0))
+                let transaction = RawTransaction(to: "cfx:acf2rcsh8payyxpg6xj7b0ztswwh81ute60tsw35j7",
+                                             data: contract.data)
+                let result = try client.estimateGasAndCollateral(rawTransaction: transaction!).wait()
+                debugPrint(result)
+                reqeustExpectation.fulfill()
+            } catch let error {
+                debugPrint(error.localizedDescription)
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
+    
     func testSignExample() throws {
         do {
             let data = "Hello World".data(using: .utf8)!

@@ -96,11 +96,7 @@ public class ConfluxClient: ConfluxBaseClient {
     public func estimateGasAndCollateral(rawTransaction: RawTransaction) -> Promise<EstimateGasAndCollateral> {
         return Promise<EstimateGasAndCollateral> { seal in
             var parameters = [
-                "from": rawTransaction.from?.hexAddress.addPrefix("0x") ?? "",
-                "to": rawTransaction.to.hexAddress.addPrefix("0x"),
-                "gasPrice": String(rawTransaction.gasPrice, radix: 16).addPrefix("0x"),
-                "nonce": String(rawTransaction.nonce, radix: 16).addPrefix("0x"),
-                "value": String(rawTransaction.value, radix: 16).addPrefix("0x")
+                "to": rawTransaction.to.address
             ] as? [String: Any]
             if rawTransaction.data.count > 0 {
                 parameters?["data"] = rawTransaction.data.toHexString().addPrefix("0x")
