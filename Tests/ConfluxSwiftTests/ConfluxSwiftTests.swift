@@ -41,7 +41,7 @@ final class ConfluxSwiftTests: XCTestCase {
         let client = ConfluxClient(url: URL(string: "https://main.confluxrpc.com")!)
         DispatchQueue.global().async {
             do {
-                let transaction = RawTransaction(value: BigInt(1900000000), from: "cfx:aamnw6ffth13kr6tpwkk00yam6r62jwu7erykmhh3m", to: "cfx:aamjy3abae3j0ud8ys0npt38ggnunk5r4ps2pg8vcc", gasPrice: 22, gasLimit: 222, nonce: 148)
+                let transaction = RawTransaction(value: BigUInt(1900000000), from: "cfx:aamnw6ffth13kr6tpwkk00yam6r62jwu7erykmhh3m", to: "cfx:aamjy3abae3j0ud8ys0npt38ggnunk5r4ps2pg8vcc", gasPrice: 22, gasLimit: 222, nonce: 148)
                 let result = try client.estimateGasAndCollateral(rawTransaction: transaction!).wait()
                 debugPrint(result.gasLimit)
                 debugPrint(result.gasUsed)
@@ -84,7 +84,7 @@ final class ConfluxSwiftTests: XCTestCase {
     
     func testSignTransactionExample() throws {
         do {
-           let transaction = RawTransaction(value: BigInt(10000), from: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8", to: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8", gasPrice: 100000,gasLimit: 21000, nonce: 104)!
+           let transaction = RawTransaction(value: BigUInt(10000), from: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8", to: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8", gasPrice: 100000,gasLimit: 21000, nonce: 104)!
             let keypair = try ConfluxKeypair(privateKey: Data(hex: "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"), netId: 1029)
             let signature = try keypair.sign(transaction: transaction, chanId: 1029)
         } catch let error {
