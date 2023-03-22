@@ -84,9 +84,19 @@ final class ConfluxSwiftTests: XCTestCase {
     
     func testSignTransactionExample() throws {
         do {
-           let transaction = RawTransaction(value: BigUInt(10000), from: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8", to: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8", gasPrice: 100000,gasLimit: 21000, nonce: 104)!
-            let keypair = try ConfluxKeypair(privateKey: Data(hex: "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"), netId: 1029)
-            let signature = try keypair.sign(transaction: transaction, chanId: 1029)
+            let to = Address(data: Data(hex: "0x0123456789012345678901234567890123456789"), netId: 1)
+           let transaction = RawTransaction(value: BigUInt(0),
+                                            from: "cfx:aarp6as724w802sb4uuekpcfukr639w2dj9ezrgjk8",
+                                            to: to.address,
+                                            gasPrice: 1,
+                                            gasLimit: 21000,
+                                            nonce: 127,
+                                            storageLimit: BigUInt(0),
+                                            epochHeight: BigUInt(0),
+                                            chainId: 1)!
+            let keypair = try ConfluxKeypair(privateKey: Data(hex: "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"), netId: 1)
+            let signature = try keypair.sign(transaction: transaction, chanId: 1)
+            XCTAssertEqual(signature.toHexString(), "f863df7f01825208940123456789012345678901234567890123456789808080018001a0bde07fe87c58cf83c50a4787c637a05a521d5f8372bd8acb207504e8af2daee4a0233f41b647de5846856106a8bc0fb67ba4dc3c184d328e565547928adedc8f3c")
         } catch let error {
             debugPrint(error.localizedDescription)
         }

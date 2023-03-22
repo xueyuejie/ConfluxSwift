@@ -16,9 +16,9 @@ public struct RawTransaction {
     public let gasLimit: Int
     public let nonce: Int
     public let chainId: Int
-    public let storageLimit: BigUInt
-    public let epochHeight: BigUInt
-    public let data: Data
+    public var storageLimit: BigUInt
+    public var epochHeight: BigUInt
+    public var data: Data
 }
 
 extension RawTransaction {
