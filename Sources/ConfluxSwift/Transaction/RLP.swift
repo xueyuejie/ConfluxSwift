@@ -15,28 +15,22 @@ public struct RLP {
         switch element {
         case let list as [Any]:
             encoded = try encode(elements: list)
-        
-        case let bint as BigInt:
+        case let bint as BigUInt:
             encoded = encode(bint: bint)
-        
         case let int as Int:
-            encoded = encode(bint: BigInt(int))
+            encoded = encode(bint: BigUInt(int))
         case let uint8 as UInt8:
-            encoded = encode(bint: BigInt(uint8))
+            encoded = encode(bint: BigUInt(uint8))
         case let data as Data:
             encoded = encode(data: data)
-            
         case let string as String:
             encoded = encode(string: string)
-        
         default:
             encoded = nil
         }
-        
         guard let data = encoded else {
             throw ConfluxError.otherError("transaction encode error")
         }
-        
         return data
     }
     
@@ -56,7 +50,7 @@ public struct RLP {
         return encode(data: data)
     }
     
-    private static func encode(bint: BigInt) -> Data? {
+    private static func encode(bint: BigUInt) -> Data? {
         let data = bint.serialize()
         return encode(data: data)
     }

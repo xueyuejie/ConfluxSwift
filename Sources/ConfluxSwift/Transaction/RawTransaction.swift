@@ -9,20 +9,20 @@ import Foundation
 import BigInt
 
 public struct RawTransaction {
-    public let value: BigInt
+    public let value: BigUInt
     public var from: Address? = nil
     public let to: Address
     public let gasPrice: Int
     public let gasLimit: Int
     public let nonce: Int
     public let chainId: Int
-    public let storageLimit: BigInt
-    public let epochHeight: BigInt
+    public let storageLimit: BigUInt
+    public let epochHeight: BigUInt
     public let data: Data
 }
 
 extension RawTransaction {
-    public init?(value: BigInt,from: String, to: String, gasPrice: Int, gasLimit: Int = 0, nonce: Int, data: Data = Data(), storageLimit: BigInt = BigInt(0), epochHeight: BigInt = BigInt(0), chainId: Int = 1029) {
+    public init?(value: BigUInt,from: String, to: String, gasPrice: Int, gasLimit: Int = 0, nonce: Int, data: Data = Data(), storageLimit: BigUInt = BigUInt(0), epochHeight: BigUInt = BigUInt(0), chainId: Int = 1029) {
         guard let fromAddress = Address(string: from) else { return nil }
         guard let toAddress = Address(string: to) else { return nil }
         self.value = value
@@ -53,14 +53,14 @@ extension RawTransaction: Codable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        value = try container.decode(BigInt.self, forKey: .value)
+        value = try container.decode(BigUInt.self, forKey: .value)
         to = try container.decode(Address.self, forKey: .to)
         gasPrice = try container.decode(Int.self, forKey: .gasPrice)
         gasLimit = try container.decode(Int.self, forKey: .gasLimit)
         nonce = try container.decode(Int.self, forKey: .nonce)
         chainId = try container.decode(Int.self, forKey: .chainId)
-        storageLimit = try container.decode(BigInt.self, forKey: .storageLimit)
-        epochHeight = try container.decode(BigInt.self, forKey: .epochHeight)
+        storageLimit = try container.decode(BigUInt.self, forKey: .storageLimit)
+        epochHeight = try container.decode(BigUInt.self, forKey: .epochHeight)
         data = try container.decode(Data.self, forKey: .data)
     }
     
