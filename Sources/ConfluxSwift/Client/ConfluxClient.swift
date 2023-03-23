@@ -37,11 +37,11 @@ public class ConfluxClient: ConfluxBaseClient {
     
     public func getTokenBalance(address: String, contractAddress: String) -> Promise<BigInt> {
         return Promise<BigInt> { seal in
-            guard let addressHex = Address(string: address)?.hexAddress else {
+            guard let data = ConfluxToken.ContractFunctions.balanceOf(address: address).data else {
                 seal.reject(ConfluxError.otherError("invalid address"))
                 return
             }
-            let dataHex = ConfluxToken.ContractFunctions.balanceOf(address: addressHex).data.toHexString().addPrefix("0x")
+            let dataHex = data.toHexString().addPrefix("0x")
             call(to: contractAddress, data: dataHex).done { result in
                 seal.fulfill(BigInt(result.lowercased().cfxStripHexPrefix(), radix: 16) ?? BigInt.zero)
             }.catch { error in
@@ -51,9 +51,12 @@ public class ConfluxClient: ConfluxBaseClient {
     }
     
     func getTokenDecimal(contractAddress: String) -> Promise<Int>  {
-        let data = ConfluxToken.ContractFunctions.decimals.data.toHexString().addPrefix("0x")
         return Promise<Int> { seal in
-            call(to: contractAddress, data: data).done { result in
+            guard let data = ConfluxToken.ContractFunctions.decimals.data else {
+                seal.reject(ConfluxError.otherError("invalid address"))
+                return
+            }
+            call(to: contractAddress, data: data.toHexString().addPrefix("0x")).done { result in
                 seal.fulfill(Int(result.lowercased().cfxStripHexPrefix(), radix: 16) ?? 0)
             }.catch { error in
                 seal.reject(error)

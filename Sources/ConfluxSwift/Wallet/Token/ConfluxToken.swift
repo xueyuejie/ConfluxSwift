@@ -43,7 +43,10 @@ public struct ConfluxToken {
     /// - Returns: transaction data
     public func generateDataParameter(toAddress: String, amount: String) throws -> Data {
         let poweredAmount = try power(amount: amount)
-        return ConfluxToken.ContractFunctions.transfer(address: toAddress, amount: poweredAmount).data
+        guard let data = ConfluxToken.ContractFunctions.transfer(address: toAddress, amount: poweredAmount).data else {
+            throw ConfluxError.otherError("invalid toAddress")
+        }
+        return data
     }
     
     /// Power the amount by the decimal
@@ -116,17 +119,18 @@ extension ConfluxToken {
             return method.data(using: .ascii)!.sha3(.keccak256)[0...3]
         }
         
-        public var data: Data {
+        public var data: Data? {
             switch self {
             case .balanceOf(let address):
-                let noHexAddress = ConfluxToken.pad(string: address.cfxStripHexPrefix())
+                guard let padAddress = Address(string: address) else {return nil}
+                let noHexAddress = ConfluxToken.pad(string: padAddress.hexAddress.cfxStripHexPrefix())
                 let result = Data(hex: methodSignature.toHexString() + noHexAddress)
                 return result
-                
             case .transfer(let toAddress, let poweredAmount):
-                let address = ConfluxToken.pad(string: toAddress.cfxStripHexPrefix())
+                guard let address = Address(string: toAddress) else {return nil}
+                let noHexAddress = ConfluxToken.pad(string: address.hexAddress.cfxStripHexPrefix())
                 let amount = ConfluxToken.pad(string: poweredAmount.serialize().toHexString())
-                return Data(hex: methodSignature.toHexString() + address + amount)
+                return Data(hex: methodSignature.toHexString() + noHexAddress + amount)
             case .decimals:
                 return Data(hex: methodSignature.toHexString())
             }
