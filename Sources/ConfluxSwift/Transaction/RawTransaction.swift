@@ -9,13 +9,13 @@ import Foundation
 import BigInt
 
 public struct RawTransaction {
-    public let value: BigUInt
+    public var value: BigUInt
     public var from: Address? = nil
-    public let to: Address
-    public let gasPrice: BigUInt
-    public let gasLimit: BigUInt
-    public let nonce: BigUInt
-    public let chainId: BigUInt
+    public var to: Address
+    public var gasPrice: BigUInt
+    public var gasLimit: BigUInt
+    public var nonce: BigUInt
+    public var chainId: BigUInt
     public var storageLimit: BigUInt
     public var epochHeight: BigUInt
     public var data: Data

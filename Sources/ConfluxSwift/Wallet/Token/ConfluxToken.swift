@@ -102,6 +102,8 @@ extension ConfluxToken {
     public enum ContractFunctions {
         case balanceOf(address: String)
         case transfer(address: String, amount: BigUInt)
+        case deposit(amount: BigUInt)
+        case withdraw(amount: BigUInt)
         case decimals
         
         var methodSignature: Data {
@@ -110,6 +112,10 @@ extension ConfluxToken {
                 return generateSignature(method: "balanceOf(address)")
             case .transfer:
                 return generateSignature(method: "transfer(address,uint256)")
+            case .deposit:
+                return generateSignature(method: "deposit(uint256 amount)")
+            case .withdraw:
+                return generateSignature(method: "withdraw(uint256 amount)")
             case .decimals:
                 return generateSignature(method: "decimals()")
             }
@@ -131,6 +137,12 @@ extension ConfluxToken {
                 let noHexAddress = ConfluxToken.pad(string: address.hexAddress.cfxStripHexPrefix())
                 let amount = ConfluxToken.pad(string: poweredAmount.serialize().toHexString())
                 return Data(hex: methodSignature.toHexString() + noHexAddress + amount)
+            case .deposit(amount: let amount):
+                let amount = ConfluxToken.pad(string: amount.serialize().toHexString())
+                return Data(hex: amount)
+            case .withdraw(amount: let amount):
+                let amount = ConfluxToken.pad(string: amount.serialize().toHexString())
+                return Data(hex: amount)
             case .decimals:
                 return Data(hex: methodSignature.toHexString())
             }
