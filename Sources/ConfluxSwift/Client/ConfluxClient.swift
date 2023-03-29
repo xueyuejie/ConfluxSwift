@@ -102,7 +102,7 @@ public class ConfluxClient: ConfluxBaseClient {
                 "to": toAddress
             ] as? [String: Any]
             if let _value = value, _value.cfxStripHexPrefix().count > 0   {
-                parameters?["value"] = _value
+                parameters?["value"] = _value.addPrefix("0x")
             }
             if let _data = data, _data.count > 0 {
                 parameters?["data"] = _data.toHexString().addPrefix("0x")
