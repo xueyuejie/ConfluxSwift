@@ -101,10 +101,10 @@ public class ConfluxClient: ConfluxBaseClient {
             var parameters = [
                 "to": toAddress
             ] as? [String: Any]
-            if let _value = value {
+            if let _value = value, _value.cfxStripHexPrefix().count > 0   {
                 parameters?["value"] = _value
             }
-            if let _data = data {
+            if let _data = data, _data.count > 0 {
                 parameters?["data"] = _data.toHexString().addPrefix("0x")
             }
             sendRPC(method:  "cfx_estimateGasAndCollateral", params: [parameters ?? [String: Any]()]).done { (result: EstimateGasAndCollateral) in
