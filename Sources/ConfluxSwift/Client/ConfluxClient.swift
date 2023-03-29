@@ -96,13 +96,16 @@ public class ConfluxClient: ConfluxBaseClient {
         }
     }
     
-    public func estimateGasAndCollateral(rawTransaction: RawTransaction) -> Promise<EstimateGasAndCollateral> {
+    public func estimateGasAndCollateral(toAddress: String, value: String? = nil, data: Data? = nil) -> Promise<EstimateGasAndCollateral> {
         return Promise<EstimateGasAndCollateral> { seal in
             var parameters = [
-                "to": rawTransaction.to.address
+                "to": toAddress
             ] as? [String: Any]
-            if rawTransaction.data.count > 0 {
-                parameters?["data"] = rawTransaction.data.toHexString().addPrefix("0x")
+            if let _value = value {
+                parameters?["value"] = _value
+            }
+            if let _data = data {
+                parameters?["data"] = _data.toHexString().addPrefix("0x")
             }
             sendRPC(method:  "cfx_estimateGasAndCollateral", params: [parameters ?? [String: Any]()]).done { (result: EstimateGasAndCollateral) in
                 seal.fulfill(EstimateGasAndCollateral(
