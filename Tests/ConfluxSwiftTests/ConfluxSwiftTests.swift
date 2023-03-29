@@ -41,8 +41,7 @@ final class ConfluxSwiftTests: XCTestCase {
         let client = ConfluxClient(url: URL(string: "https://main.confluxrpc.com")!)
         DispatchQueue.global().async {
             do {
-                let transaction = RawTransaction(value: BigUInt(1900000000), from: "cfx:aamnw6ffth13kr6tpwkk00yam6r62jwu7erykmhh3m", to: "cfx:aamjy3abae3j0ud8ys0npt38ggnunk5r4ps2pg8vcc", gasPrice: 22, gasLimit: 222, nonce: 148)
-                let result = try client.estimateGasAndCollateral(rawTransaction: transaction!).wait()
+                let result = try client.estimateGasAndCollateral(toAddress: "cfx:aamjy3abae3j0ud8ys0npt38ggnunk5r4ps2pg8vcc").wait()
                 debugPrint(result.gasLimit)
                 debugPrint(result.gasUsed)
                 debugPrint(result.storageCollateralized)
@@ -77,9 +76,7 @@ final class ConfluxSwiftTests: XCTestCase {
         DispatchQueue.global().async {
             do {
                 let contract = ConfluxToken.ContractFunctions.transfer(address: "cfx:aamnw6ffth13kr6tpwkk00yam6r62jwu7erykmhh3m", amount: BigUInt(0))
-                let transaction = RawTransaction(to: "cfx:acf2rcsh8payyxpg6xj7b0ztswwh81ute60tsw35j7",
-                                             data: contract.data ?? Data())
-                let result = try client.estimateGasAndCollateral(rawTransaction: transaction!).wait()
+                let result = try client.estimateGasAndCollateral(toAddress: "cfx:acf2rcsh8payyxpg6xj7b0ztswwh81ute60tsw35j7", data: contract.data).wait()
                 debugPrint(result)
                 reqeustExpectation.fulfill()
             } catch let error {
